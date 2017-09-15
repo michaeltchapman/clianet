@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import glob
 import os
 import sys
 
@@ -21,11 +22,24 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as f:
     readme = f.read()
 
 packages = [
-    'skeleton',
+    'clianet',
+    'clianet.drivers',
 ]
 
-package_data = {
-}
+data_files = []
+dirs = os.listdir('playbooks')
+for d in dirs:
+    files = os.listdir('playbooks/' + d)
+    files = [ 'playbooks/'+d+'/'+f for f in files ]
+    data_files.append(('usr/share/clianet/playbooks/'+d , files))
+
+
+def package_files(directory):
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            paths.append(os.path.join('..', path, filename))
+    return paths
 
 requires = [
 ]
@@ -41,18 +55,22 @@ classifiers = [
         'Topic :: Software Development :: Debuggers',
         'Topic :: Software Development :: Libraries :: Python Modules',
 ]
-
+ 
 setup(
-    name='python-clianet',
-    version=skeleton.__version__,
+    name='clianet',
+    version=clianet.__version__,
     description='Cross vendor CLI for common ansible networking tasks.',
     long_description=readme,
     packages=packages,
-    package_data=package_data,
+    data_files=data_files,
     install_requires=requires,
-    author=skeleton.__author__,
+    entry_points='''
+    [console_scripts]
+    clianet=clianet.core:main
+    ''',
+    author=clianet.__author__,
     author_email='michapma@redhat.com',
-    url='https://github.com/michaeltchapman/python-clianet',
+    url='https://github.com/michaeltchapman/clianet',
     license='MIT',
     classifiers=classifiers,
 )

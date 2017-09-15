@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - debug:
+        msg: "Adding {{ vlan }} to {{ port }} on a Cumulus switch!"
+
+    - nclu:
+        commands:  "add int {{ port }} bridge access {{ vlan }}"
+        commit: true
