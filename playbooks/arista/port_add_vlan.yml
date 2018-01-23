@@ -1,0 +1,9 @@
+---
+- hosts: all
+  tasks:
+    - eos_vlan:
+        vlan_id: "{{ vlan }}"
+        state: present
+        transport: socket
+        interfaces:
+          - "{{ port }}"
