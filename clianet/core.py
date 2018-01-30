@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import importlib 
 import logging
 import os
 import sys
@@ -63,6 +64,7 @@ def create_bridge_parser(subparsers):
 
 def use_driver(args):
     # Maybe not good...
-    module = __import__('clianet.drivers.'+args.driver, globals(), locals(), [args.driver], -1)
+    #module = __import__('clianet.drivers.'+args.driver, globals(), locals(), [args.driver], -1)
+    module = importlib.import_module('clianet.drivers.'+args.driver)
     func = getattr(module, args.func)
     func(args)

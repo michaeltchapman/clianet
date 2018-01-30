@@ -1,7 +1,7 @@
 Clianet
 ======================
 
-This module is intended to provide a CLI interface to perform common
+This module is intended to provide a CLI and python interface to perform common
 operations on networking equipment, using the ansible-networking modules.
 
 Usage
