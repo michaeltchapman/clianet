@@ -16,19 +16,39 @@ def main():
         datefmt='%m/%d/%Y %I:%M:%S %p',
         level=logging.DEBUG)
 
+    if (args.debug):
+        root = logging.getLogger()
+        root.setLevel(logging.DEBUG)
+
+        ch = logging.StreamHandler(sys.stdout)
+        ch.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+        root.addHandler(ch)  
+
     use_driver(args)
 
 def create_parsers():
     main_parser = argparse.ArgumentParser()
     main_parser.add_argument('host', help='host to operate on')
     main_parser.add_argument('--user',default='root',help='user to connect as')
+    main_parser.add_argument('--debug',action='store_true',help='Print debug to stdout')
     main_parser.add_argument('-p', '--private-key',default=None,help='private key for ansible connection')
     main_parser.add_argument('-i', '--inventory',default=None,help='inventory for ansible connection')
     main_parser.add_argument('driver', help='vendor driver to use')
     subparsers = main_parser.add_subparsers(help='sub-command help')
     create_port_parser(subparsers)
     create_bridge_parser(subparsers)
+    create_status_parser(subparsers)
     return main_parser
+
+def create_status_parser(subparsers):
+    status_parser = subparsers.add_parser('status', help='status help')
+    status_subparsers = status_parser.add_subparsers()
+
+    version = status_subparsers.add_parser('version', help='show version')
+    version.set_defaults(func='status_version')
+    
 
 def create_port_parser(subparsers):
     port_parser = subparsers.add_parser('port', help='port help')

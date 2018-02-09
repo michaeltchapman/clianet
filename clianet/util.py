@@ -6,7 +6,7 @@ import pprint
 import subprocess
 import sys
 
-def run_ansible(ansible_vars, playbook, args):
+def run_ansible(ansible_vars, playbook, args, local=False):
     """
     Executes ansible playbook and checks for errors
     :param ansible_vars: dictionary of variables to inject into ansible run
@@ -15,9 +15,13 @@ def run_ansible(ansible_vars, playbook, args):
     :return: None
     """
     logging.info("Executing ansible playbook: {}".format(playbook))
+    if local:
+        connection = 'local'
+    else:
+        connection = 'smart'
     playbook = sys.prefix + '/usr/share/clianet/playbooks/' + playbook
     ansible_command = ['ansible-playbook', '-u',args.user,'-i', args.host+',',
-                       '-c', 'smart', playbook, '-vvv']
+                       '-c', connection, playbook, '-vvv']
     if args.private_key:
         ansible_command.append('--private-key='+args.private_key)
 

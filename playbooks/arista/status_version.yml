@@ -1,13 +1,6 @@
 ---
 - hosts: all
   tasks:
-    #- eos_vlan:
-    #    vlan_id: "{{ vlan }}"
-    #    state: present
-    #    interfaces:
-    #      - "{{ port }}"
-    #    provider: "{{ eos_connection }}"
-
     - eos_command:                                                              
         commands: 'show version'  
         provider: "{{ eos_connection }}"
