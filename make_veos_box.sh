@@ -43,9 +43,9 @@ qemu-img convert -f vmdk -O qcow2 $VEOS_NAME.vmdk veos-box.qcow2
 echo "Copying qcow and iso to /var/lib/libvirt/images"
 
 sudo cp -f veos-box.qcow2 /var/lib/libvirt/images
-sudo mv -f Aboot-veos* /var/lib/libvirt-images
+sudo mv -f Aboot-veos* /var/lib/libvirt/images
 
-echo "Definiting libvirt domain"
+echo "Defining libvirt domain"
 
 if sudo virsh list --all | grep veos-box; then
   sudo virsh destroy veos-box
