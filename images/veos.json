@@ -1,0 +1,15 @@
+{
+  "name": "arista/veos",
+  "description": "Arista vEOS",
+  "versions": [
+    {
+      "version": "VERSION"
+      "providers": [
+        {
+          "name": "libvirt",
+          "url": "file:////tmp/makeveos/veos-box.box"
+        }
+      ]
+    }
+  ]
+}
