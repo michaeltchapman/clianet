@@ -58,11 +58,11 @@ echo "Starting domain"
 sudo virsh start veos-box
 
 echo "Waiting 90 seconds for box to initialise"
-sleep 90
+sleep 180
 
 echo "Configuring domain, will pause for a bit after login"
 
-expect -c"
+sudo expect -c"
     set timeout 10
     spawn virsh console veos-box
     expect {
