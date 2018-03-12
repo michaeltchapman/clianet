@@ -62,7 +62,7 @@ sleep 90
 
 echo "Configuring domain, will pause for a bit after login"
 
-expect -c"
+sudo expect -c"
     set timeout 10
     spawn virsh console veos-box
     expect {

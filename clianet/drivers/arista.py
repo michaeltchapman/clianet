@@ -17,7 +17,7 @@ def get_eos_connection(args):
              'transport' : 'eapi',
              'use_ssl' : 'false',
              'validate_certs' : 'no',
-             'port' : 80 }
+             'port' : 8080 }
 
 def port_add_vlan(args):
     print(": add vlan %d to port %s on host %s" % (args.vlan,
