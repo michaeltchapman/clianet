@@ -1,6 +1,7 @@
 # Decent example of vagrant-libvirt switch style setup here:
 # https://github.com/skamithi/vagrant-cw-libvirt/blob/master/Vagrantfile
 
+
 swp10 = [8010, 9010]
 swp11 = [8011, 9011]
 swp12 = [8012, 9012]
@@ -72,7 +73,7 @@ Vagrant.configure(2) do |config|
       #arista.vm.network "private_network", virtualbox__intnet: "swp3", auto_config: false
       #arista.vm.network "private_network", virtualbox__intnet: "swp4", auto_config: false
 
-    arista.vm.box = "arista/veos"
+    arista.vm.box = "arista/veos-box"
 
     # Turn off shared folders
     arista.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
@@ -95,7 +96,7 @@ Vagrant.configure(2) do |config|
       domain.memory = 2048
       # this needs to be set to the aboot image, which can be obtained from the
       # arista website
-      domain.storage :file, :device => :cdrom, dev: "hdc", :path => "/var/lib/libvirt/images/Aboot-veos-8.0.0.iso"  
+      domain.storage :file, :device => :cdrom, dev: "hdc", :path => "/var/lib/libvirt/images/Aboot-veos-8.0.0.iso"
       # Boot from cd first
       domain.boot 'cdrom'
       domain.boot 'hd'
@@ -103,11 +104,34 @@ Vagrant.configure(2) do |config|
       #domain.management_network_mode = 'none'
     end  
 
-    arista.vm.network "private_network",
-      :libvirt__tunnel_type => "udp",
-      :libvirt__tunnel_port => swp10[0],
-      :libvirt__tunnel_local_port => swp10[1]
+    #arista.vm.network "private_network",
+    #  :libvirt__tunnel_type => "udp",
+    #  :libvirt__tunnel_port => swp10[0],
+    #  :libvirt__tunnel_local_port => swp10[1]
 
+    arista.vm.network "private_network",
+      auto_config: false,
+      :libvirt__tunnel_type => "udp",
+      :libvirt__tunnel_port => '9001',
+      :libvirt__tunnel_local_port => '8001'
+    # em4
+    arista.vm.network "private_network",
+      auto_config: false,
+      :libvirt__tunnel_type => "udp",
+      :libvirt__tunnel_port => '9002',
+      :libvirt__tunnel_local_port => '8002'
+    # em5
+    arista.vm.network "private_network",
+      auto_config: false,
+      :libvirt__tunnel_type => "udp",
+      :libvirt__tunnel_port => '9003',
+      :libvirt__tunnel_local_port => '8003'
+    # em6
+    arista.vm.network "private_network",
+      auto_config: false,
+      :libvirt__tunnel_type => "udp",
+      :libvirt__tunnel_port => '9004',
+      :libvirt__tunnel_local_port => '8004'
      # Arista config: enable eAPI and configure mgmt iface 
      arista.vm.provision 'shell', inline: <<-SHELL
 sudo route add default gw `route -n | grep ma1 | cut -d ' ' -f 1 | cut -d '.' -f 1-3`.1 dev ma1
