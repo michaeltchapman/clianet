@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
 #      end
 
       cumulus.vm.provider :libvirt do |libvirt|
-        libvirt.memory = 1024 
+        libvirt.memory = 1024
       end
 
       cumulus.vm.synced_folder '.', '/vagrant', :disabled => true
@@ -61,10 +61,41 @@ Vagrant.configure(2) do |config|
 
   end
 
-  
+  config.vm.define "nxos" do |nxos|
+    config.ssh.insert_key = false
+
+    nxos.vm.box = "cisco/nxos"
+    # Turn off shared folders
+    nxos.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
+    # Dont change default SSH key - already in image
+    nxos.ssh.insert_key = false
+
+    nxos.vm.provider :libvirt do |domain|
+      #domain.nic_adapter_count = 1
+      domain.cpu_mode = "custom"
+      domain.cpu_model = nil
+      domain.driver = "kvm"
+      domain.machine_type = "pc-i440fx-1.5"
+      domain.emulator_path = "/usr/bin/qemu-system-x86_64"
+      domain.disk_bus = 'sata'
+      domain.cpus = 4
+      domain.memory = 8192
+      domain.loader = "/usr/share/edk2/ovmf/OVMF_CODE.fd"
+      domain.graphics_type = 'none'
+      domain.nic_model_type = 'e1000'
+    end
+
+    nxos.vm.network "private_network",
+      :auto_config => false,
+      :libvirt__tunnel_type => "udp",
+      :libvirt__tunnel_port => swp10[0],
+      :libvirt__tunnel_local_port => swp10[1]
+
+  end
+
   config.vm.define "arista" do |arista|
       #arista.vm.provider "Virtualbox" do |v|
-      #  v.memory = 2048 
+      #  v.memory = 2048
       #end
       #arista.vm.network "private_network", ip: "192.168.50.4", auto_config: false
       #arista.vm.network "private_network", virtualbox__intnet: "swp1", auto_config: false
@@ -95,20 +126,19 @@ Vagrant.configure(2) do |config|
       domain.memory = 2048
       # this needs to be set to the aboot image, which can be obtained from the
       # arista website
-      domain.storage :file, :device => :cdrom, dev: "hdc", :path => "/var/lib/libvirt/images/Aboot-veos-8.0.0.iso"  
+      domain.storage :file, :device => :cdrom, dev: "hdc", :path => "/var/lib/libvirt/images/Aboot-veos-8.0.0.iso"
       # Boot from cd first
       domain.boot 'cdrom'
       domain.boot 'hd'
-
       #domain.management_network_mode = 'none'
-    end  
+    end
 
     arista.vm.network "private_network",
       :libvirt__tunnel_type => "udp",
       :libvirt__tunnel_port => swp10[0],
       :libvirt__tunnel_local_port => swp10[1]
 
-     # Arista config: enable eAPI and configure mgmt iface 
+     # Arista config: enable eAPI and configure mgmt iface
      arista.vm.provision 'shell', inline: <<-SHELL
 sudo route add default gw `route -n | grep ma1 | cut -d ' ' -f 1 | cut -d '.' -f 1-3`.1 dev ma1
 FastCli -p 15 -c "configure

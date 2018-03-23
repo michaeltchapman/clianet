@@ -2,6 +2,9 @@
 
 # Consume the veos vmdk image and the aboot iso from the arista download
 # page and create a vagrant-libvirt box that can be configured with Ansible
+# Requirements:
+# Download vEOS-lab-4.20.1F.vmdk and Aboot-veos-8.0.0.iso from:
+# https://www.arista.com/en/support/software-download
 
 if ! rpm -q expect; then
   sudo yum install -y expect
